@@ -1,4 +1,5 @@
 Pirate.js is a simple tool (for the moment) that will (hopefully) allow the use of HTML5 elements/attributes.
+
 > **WARNING**:  There are **no plans** to support IE6 in this.  Any support for IE6 is entirely coincidental, and will be altered in favor of IE7+ and other browsers, if it will increase performance or decrease footprint.
 
 The progress can be found on this readme.
