@@ -6,16 +6,27 @@ Issues:
 There is no intent to support IE6 with this, only IE7+.
 
 Optimizations:
--Performance:
-	In .html5.loader, the regex in the replace method shouldn't be instantiated OTF (on the fly), it should be compiled before it is called.  I just need to figure out where I'm going to put it.
-
--Ease of use:
-	Any instance of the classes "pir-placeholder", "pir-placeholder-hidden", and "pir-placeholder-shown" should be put in the config (wherever I decide to put that) so that they can be configured by the developer.
 
 */
 
 (function(){
 	var Pirate = {  //Arrrrrrrrr
+		config : {
+			placeholder : {
+				className :  "pir-placeholder",
+				hiddenClassName : "pir-placeholder-hidden",
+				shownClassName : "pir-placeholder-shown"
+			}
+		},
+		
+		common : {
+			regex : {
+				replace : {  //Yeah it's nested pretty hardcore, but it helps with the organization, in my opinion.
+					dashToUnderscore : /-/g
+				}
+			}
+		},
+		
 		functions : {  //Alright, so I think it's the best idea here to NOT have to rely on a framework, so let's add in some custom cross-browser solutions here.
 					   //These should look familiar, I built them for Skeleton originally.
 			getElementsByClassName : function(context, cls){  //This will mimic element.getElementsByClassName functionality for older browsers that do not support it, such as IE7.
@@ -249,21 +260,21 @@ Optimizations:
 				textPlaceholder : function(element){  //Sets up placeholders in text inputs, attaches the proper event handlers.
 					if(element.value === ""){
 						element.value = element.getAttribute("placeholder");
-						Pirate.functions.addClass(element, "pir-placeholder");
+						Pirate.functions.addClass(element, Pirate.config.placeholder.className);
 					}
 					element._pirate.hasChanged = false;
 					
 					Pirate.functions.addListener(element, "focus", function(){
 						if(!this._pirate.hasChanged){
 							this.value = "";
-							Pirate.removeClass(this, "pir-placeholder");
+							Pirate.removeClass(this, Pirate.config.placeholder.className);
 						}
 					});
 					
 					Pirate.addListener(element, "blur", function(){
 						if(this.value === ""){
 							this.value = this.getAttribute("placeholder");
-							Pirate.addClass(this, "pir-placeholder");
+							Pirate.addClass(this, Pirate.config.placeholder.className);
 							this._pirate.hasChanged = false;
 						}
 					});
@@ -281,20 +292,20 @@ Optimizations:
 					
 					tempElement.value = passElement.getAttribute("placeholder");
 					tempElement.setAttribute("type", "text");
-					Pirate.addClass(tempElement, ["pir-placeholder", "pir-placeholder-hidden"]);
-					Pirate.addClass(passElement, "pir-placeholder-shown");
+					Pirate.addClass(tempElement, [Pirate.config.placeholder.className, Pirate.config.placeholder.hiddenClassName]);
+					Pirate.addClass(passElement, Pirate.config.placeholder.shownClassName);
 					passElement.parentNode.insertBefore(tempElement, (passElement.nextSibling || passElement));
 					
 					if(element.value === ""){
-						Pirate.swapClass(tempElement, "pir-placeholder-hidden", "pir-placeholder-shown");
-						Pirate.swapClass(passElement, "pir-placeholder-shown", "pir-placeholder-hidden");
+						Pirate.swapClass(tempElement, Pirate.config.placeholder.hiddenClassName, Pirate.config.placeholder.shownClassName);
+						Pirate.swapClass(passElement, Pirate.config.placeholder.shownClassName, Pirate.config.placeholder.hiddenClassName);
 					}
 					passElement._pirate.hasChanged = false;
 					
 					Pirate.addListener(tempElement, "focus", function(){
 						if(!passElement._pirate.hasChanged){
-							Pirate.swapClass(passElement, "pir-placeholder-hidden", "pir-placeholder-shown");
-							Pirate.swapClass(this, "pir-placeholder-shown", "pir-placeholder-hidden");
+							Pirate.swapClass(passElement, Pirate.config.placeholder.hiddenClassName, Pirate.config.placeholder.shownClassName);
+							Pirate.swapClass(this, Pirate.config.placeholder.shownClassName, Pirate.config.placeholder.hiddenClassName);
 							passElement.focus();
 						}
 					});
@@ -302,8 +313,8 @@ Optimizations:
 					Pirate.addListener(passElement, "blur", function(){
 						if(this.value === ""){
 							tempElement.value = passElement.getAttribute("placeholder");  //Why this is here:  What if they changed the placeholder via JavaScript between the previous time and the current time this handler was called?  We need to ensure that the placeholder value is refreshed every time it is displayed.
-							Pirate.swapClass(tempElement, "pir-placeholder-hidden", "pir-placeholder-shown");
-							Pirate.swapClass(this, "pir-placeholder-shown", "pir-placeholder-hidden");
+							Pirate.swapClass(tempElement, Pirate.config.placeholder.hiddenClassName, Pirate.config.placeholder.shownClassName);
+							Pirate.swapClass(this, Pirate.config.placeholder.shownClassName, Pirate.config.placeholder.hiddenClassName);
 							this._pirate.hasChanged = false;
 						}
 					});
@@ -322,7 +333,7 @@ Optimizations:
 				
 				for(var i = 0, j = inputs.length; i < j; i++){
 					inputs[i]._pirate = {};  //The reason I'm doing this is to be able to hold our own data about the element.  Personally I add _ in front in case a for(... in ...) loop comes, I can perform if(.substr(0, 1) !== "_")
-					if((type = (inputs[i].getAttribute("type") || "").replace(/-/g, "_")) && Pirate.html5.form.create[type]){
+					if((type = (inputs[i].getAttribute("type") || "").replace(Pirate.common.regex.replace.dashToUnderscore, "_")) && Pirate.html5.form.create[type]){
 						Pirate.html5.form.create[type](inputs[i]);
 					}
 				}
