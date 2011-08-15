@@ -7,6 +7,8 @@ There is no intent to support IE6 with this, only IE7+.
 
 Optimizations:
 
+
+Current working example at http://jsfiddle.net/trink/aBmZk/
 */
 
 (function(){
@@ -267,19 +269,19 @@ Optimizations:
 					Pirate.functions.addListener(element, "focus", function(){
 						if(!this._pirate.hasChanged){
 							this.value = "";
-							Pirate.removeClass(this, Pirate.config.placeholder.className);
+							Pirate.functions.removeClass(this, Pirate.config.placeholder.className);
 						}
 					});
 					
-					Pirate.addListener(element, "blur", function(){
+					Pirate.functions.addListener(element, "blur", function(){
 						if(this.value === ""){
 							this.value = this.getAttribute("placeholder");
-							Pirate.addClass(this, Pirate.config.placeholder.className);
+							Pirate.functions.addClass(this, Pirate.config.placeholder.className);
 							this._pirate.hasChanged = false;
 						}
 					});
 					
-					Pirate.addListener(element, "keyup", function(){
+					Pirate.functions.addListener(element, "keyup", function(){
 						this._pirate.hasChanged = true;
 					});
 					
@@ -292,35 +294,35 @@ Optimizations:
 					
 					tempElement.value = passElement.getAttribute("placeholder");
 					tempElement.setAttribute("type", "text");
-					Pirate.addClass(tempElement, [Pirate.config.placeholder.className, Pirate.config.placeholder.hiddenClassName]);
-					Pirate.addClass(passElement, Pirate.config.placeholder.shownClassName);
+					Pirate.functions.addClass(tempElement, [Pirate.config.placeholder.className, Pirate.config.placeholder.hiddenClassName]);
+					Pirate.functions.addClass(passElement, Pirate.config.placeholder.shownClassName);
 					passElement.parentNode.insertBefore(tempElement, (passElement.nextSibling || passElement));
 					
 					if(element.value === ""){
-						Pirate.swapClass(tempElement, Pirate.config.placeholder.hiddenClassName, Pirate.config.placeholder.shownClassName);
-						Pirate.swapClass(passElement, Pirate.config.placeholder.shownClassName, Pirate.config.placeholder.hiddenClassName);
+						Pirate.functions.swapClass(tempElement, Pirate.config.placeholder.hiddenClassName, Pirate.config.placeholder.shownClassName);
+						Pirate.functions.swapClass(passElement, Pirate.config.placeholder.shownClassName, Pirate.config.placeholder.hiddenClassName);
 					}
 					passElement._pirate.hasChanged = false;
 					
-					Pirate.addListener(tempElement, "focus", function(){
+					Pirate.functions.addListener(tempElement, "focus", function(){
 						if(!passElement._pirate.hasChanged){
-							Pirate.swapClass(passElement, Pirate.config.placeholder.hiddenClassName, Pirate.config.placeholder.shownClassName);
-							Pirate.swapClass(this, Pirate.config.placeholder.shownClassName, Pirate.config.placeholder.hiddenClassName);
+							Pirate.functions.swapClass(passElement, Pirate.config.placeholder.hiddenClassName, Pirate.config.placeholder.shownClassName);
+							Pirate.functions.swapClass(this, Pirate.config.placeholder.shownClassName, Pirate.config.placeholder.hiddenClassName);
 							passElement.focus();
 						}
 					});
 					
-					Pirate.addListener(passElement, "blur", function(){
+					Pirate.functions.addListener(passElement, "blur", function(){
 						if(this.value === ""){
 							tempElement.value = passElement.getAttribute("placeholder");  //Why this is here:  What if they changed the placeholder via JavaScript between the previous time and the current time this handler was called?  We need to ensure that the placeholder value is refreshed every time it is displayed.
-							Pirate.swapClass(tempElement, Pirate.config.placeholder.hiddenClassName, Pirate.config.placeholder.shownClassName);
-							Pirate.swapClass(this, Pirate.config.placeholder.shownClassName, Pirate.config.placeholder.hiddenClassName);
+							Pirate.functions.swapClass(tempElement, Pirate.config.placeholder.hiddenClassName, Pirate.config.placeholder.shownClassName);
+							Pirate.functions.swapClass(this, Pirate.config.placeholder.shownClassName, Pirate.config.placeholder.hiddenClassName);
 							this._pirate.hasChanged = false;
 						}
 					});
 					
-					Pirate.addListener(passElement, "keyup", function(){
-						this.Pirate.hasChanged = true;
+					Pirate.functions.addListener(passElement, "keyup", function(){
+						this._pirate.hasChanged = true;
 					});
 					
 					Pirate.html5.form.managedElements.text.push(this);
