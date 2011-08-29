@@ -193,9 +193,11 @@ Current working example at http://jsfiddle.net/trink/aBmZk/
 					search : [],
 					datetime_local : [],
 					text : [],
-					password : []
+					password : [],
+					textArea : []
 				},
 				inputElements : [],
+				textAreas : [],
 				
 				create : {
 					color : function(){
