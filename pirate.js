@@ -256,6 +256,12 @@ Current working example at http://jsfiddle.net/trink/aBmZk/
 						if(!Pirate.html5.form.support.placeholder && element.getAttribute("placeholder") !== null){
 							Pirate.html5.form.passPlaceholder(element);
 						}
+					},
+					
+					textArea : function(element){
+						if(!Pirate.html5.form.support.placeholder && element.getAttribute("placeholder") !== null){
+							Pirate.html5.form.textPlaceholder(element);
+						}
 					}
 				},
 				
@@ -331,7 +337,8 @@ Current working example at http://jsfiddle.net/trink/aBmZk/
 			
 			loader : function(){  //Attaches HTML5 handlers to specific elements.
 				var type,
-					inputs = Pirate.html5.form.inputElements = document.getElementsByTagName("input");
+					inputs = Pirate.html5.form.inputElements = document.getElementsByTagName("input"),
+					textAreas = Pirate.html5.form.textAreas = document.getElementsByTagName("textarea");
 				
 				for(var i = 0, j = inputs.length; i < j; i++){
 					inputs[i]._pirate = {};  //The reason I'm doing this is to be able to hold our own data about the element.  Personally I add _ in front in case a for(... in ...) loop comes, I can perform if(.substr(0, 1) !== "_")
@@ -339,7 +346,14 @@ Current working example at http://jsfiddle.net/trink/aBmZk/
 						Pirate.html5.form.create[type](inputs[i]);
 					}
 				}
+				
+				for(i = 0, j = textAreas.length; i < j; i++){
+					textAreas[i]._pirate = {};
+					Pirate.html5.form.create.textArea(textAreas[i]);
+				}
 			}
 		}
 	};
+	
+	window.Pirate = Pirate;
 })();
